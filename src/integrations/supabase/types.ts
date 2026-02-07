@@ -83,6 +83,38 @@ export type Database = {
         }
         Relationships: []
       }
+      courier_analytics: {
+        Row: {
+          courier_id: string
+          created_at: string
+          event_type: string
+          id: string
+          user_agent: string | null
+        }
+        Insert: {
+          courier_id: string
+          created_at?: string
+          event_type: string
+          id?: string
+          user_agent?: string | null
+        }
+        Update: {
+          courier_id?: string
+          created_at?: string
+          event_type?: string
+          id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "courier_analytics_courier_id_fkey"
+            columns: ["courier_id"]
+            isOneToOne: false
+            referencedRelation: "courier_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       courier_profiles: {
         Row: {
           avatar_url: string | null
