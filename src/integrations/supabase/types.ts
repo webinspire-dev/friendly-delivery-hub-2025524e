@@ -118,6 +118,38 @@ export type Database = {
           },
         ]
       }
+      courier_blacklist: {
+        Row: {
+          courier_id: string
+          created_at: string
+          id: string
+          phone_number: string
+          reason: string | null
+        }
+        Insert: {
+          courier_id: string
+          created_at?: string
+          id?: string
+          phone_number: string
+          reason?: string | null
+        }
+        Update: {
+          courier_id?: string
+          created_at?: string
+          id?: string
+          phone_number?: string
+          reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "courier_blacklist_courier_id_fkey"
+            columns: ["courier_id"]
+            isOneToOne: false
+            referencedRelation: "courier_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       courier_profiles: {
         Row: {
           avatar_url: string | null
@@ -201,7 +233,16 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      blacklist_stats: {
+        Row: {
+          first_reported_at: string | null
+          last_reported_at: string | null
+          phone_number: string | null
+          reasons: string[] | null
+          report_count: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
