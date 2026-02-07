@@ -1,12 +1,11 @@
-import { forwardRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import logo from '@/assets/logo.png';
 
-const Footer = forwardRef<HTMLElement>((_, ref) => {
+const Footer = () => {
   const { t } = useLanguage();
 
   return (
-    <footer ref={ref} className="bg-foreground text-background py-12">
+    <footer className="bg-foreground text-background py-12">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8">
           {/* Brand */}
@@ -44,8 +43,6 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
       </div>
     </footer>
   );
-});
-
-Footer.displayName = 'Footer';
+};
 
 export default Footer;
