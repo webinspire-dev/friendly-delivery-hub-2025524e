@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 
-interface City { id: string; name: string; name_ar: string | null; is_active: boolean; }
+interface City { id: string; name: string; name_ar: string | null; }
 
 const HeroSection = () => {
   const { t, direction } = useLanguage();
@@ -20,7 +20,7 @@ const HeroSection = () => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const { data, error } = await supabase.from('cities').select('*').eq('is_active', true).order('name', { ascending: true });
+        const { data, error } = await supabase.from('cities').select('*').order('name', { ascending: true });
         if (error) throw error;
         setCities(data || []);
       } catch (error) { console.error('Error fetching cities:', error); }
