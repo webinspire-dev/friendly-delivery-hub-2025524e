@@ -2,6 +2,7 @@ import { LanguageProvider } from '@/contexts/LanguageContext';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import CouriersSection from '@/components/CouriersSection';
+import MobileAppSection from '@/components/MobileAppSection';
 import BecomeSection from '@/components/BecomeSection';
 import Footer from '@/components/Footer';
 import LanguagePopup from '@/components/LanguagePopup';
@@ -23,6 +24,7 @@ const Index = () => {
         <main>
           <HeroSection />
           <CouriersSection />
+          <MobileAppSection />
           <BecomeSection />
         </main>
         <Footer />
