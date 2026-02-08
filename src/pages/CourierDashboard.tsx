@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { MapPin, LogOut, User, Phone, Star, Package, Clock, Settings, Loader2, Save, CheckCircle, Navigation, Ban, KeyRound } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import logo from '@/assets/logo.png';
 import { useToast } from '@/hooks/use-toast';
 import BlacklistManager from '@/components/courier/BlacklistManager';
 import LocationPromptDialog from '@/components/LocationPromptDialog';
@@ -138,8 +139,7 @@ const CourierDashboard = () => {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center"><MapPin className="w-5 h-5 text-primary-foreground" /></div>
-              <span className="font-bold text-lg text-foreground hidden sm:block">Livreur<span className="text-primary">ADM</span></span>
+              <img src={logo} alt="Livreur Autour de Moi" className="h-28 sm:h-32 w-auto" />
             </Link>
             <div className="flex items-center gap-3">
               <button onClick={() => setLanguage(language === 'fr' ? 'ar' : 'fr')} className="px-3 py-1.5 rounded-lg bg-secondary text-sm font-medium hover:bg-secondary/80 transition-colors">{language === 'fr' ? 'العربية' : 'FR'}</button>
