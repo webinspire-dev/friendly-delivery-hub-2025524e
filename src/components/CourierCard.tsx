@@ -1,4 +1,5 @@
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useCities } from '@/contexts/CitiesContext';
 import { Button } from '@/components/ui/button';
 import { MapPin, Star, CheckCircle, Bike, Car } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -33,6 +34,7 @@ const CourierCard = ({
   avatar,
 }: CourierCardProps) => {
   const { t } = useLanguage();
+  const { getCityDisplayName } = useCities();
   const navigate = useNavigate();
   const VehicleIcon = vehicleIcons[vehicleType];
 
@@ -91,7 +93,7 @@ const CourierCard = ({
           <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
             <span className="flex items-center gap-1">
               <MapPin className="w-3.5 h-3.5" />
-              {t(`cities.${city}`)}
+              {getCityDisplayName(city)}
             </span>
             <span className="flex items-center gap-1">
               <VehicleIcon className="w-3.5 h-3.5" />
