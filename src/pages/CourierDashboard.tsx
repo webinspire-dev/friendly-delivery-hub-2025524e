@@ -7,11 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { MapPin, LogOut, User, Phone, Star, Package, Clock, Settings, Loader2, Save, CheckCircle, Navigation, Ban } from 'lucide-react';
+import { MapPin, LogOut, User, Phone, Star, Package, Clock, Settings, Loader2, Save, CheckCircle, Navigation, Ban, KeyRound } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import BlacklistManager from '@/components/courier/BlacklistManager';
 import LocationPromptDialog from '@/components/LocationPromptDialog';
+import ChangePasswordDialog from '@/components/courier/ChangePasswordDialog';
 import type { User as SupabaseUser, Session } from '@supabase/supabase-js';
 
 interface CourierProfile { id: string; user_id: string; full_name: string; phone: string; city: string | null; vehicle_type: string | null; bio: string | null; is_available: boolean; is_verified: boolean; total_deliveries: number; rating: number; latitude: number | null; longitude: number | null; }
@@ -32,6 +33,7 @@ const CourierDashboard = () => {
   const [isDisablingLocation, setIsDisablingLocation] = useState(false);
   const [isAvailable, setIsAvailable] = useState(false);
   const [showLocationPrompt, setShowLocationPrompt] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
   const [formData, setFormData] = useState({ full_name: '', phone: '', city: '', vehicle_type: 'moto', bio: '' });
 
   useEffect(() => {
@@ -60,7 +62,7 @@ const CourierDashboard = () => {
         if (!data.latitude || !data.longitude) setTimeout(() => setShowLocationPrompt(true), 500);
       } else {
         const metadata = user.user_metadata;
-        const newProfile = { user_id: user.id, full_name: metadata?.full_name || user.email?.split('@')[0] || 'Livreur', phone: metadata?.phone || '', vehicle_type: metadata?.vehicle_type || 'moto' };
+        const newProfile = { user_id: user.id, full_name: metadata?.full_name || user.email?.split('@')[0] || 'Livreur', phone: metadata?.phone || '', city: metadata?.city || null, vehicle_type: metadata?.vehicle_type || 'moto' };
         const { data: createdProfile, error: createError } = await supabase.from('courier_profiles').insert(newProfile).select().single();
         if (createError) { toast({ title: t('dashboard.error'), description: t('dashboard.updateError'), variant: 'destructive' }); }
         else if (createdProfile) {
@@ -131,6 +133,7 @@ const CourierDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background" dir={direction}>
       <LocationPromptDialog open={showLocationPrompt} onOpenChange={setShowLocationPrompt} onEnableLocation={handleGetLocation} isLoading={isGettingLocation} />
+      <ChangePasswordDialog open={showChangePassword} onOpenChange={setShowChangePassword} />
       <header className="bg-background/80 backdrop-blur-lg border-b border-border sticky top-0 z-50">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
@@ -210,6 +213,9 @@ const CourierDashboard = () => {
               <div className="space-y-2"><Label htmlFor="bio">{t('dashboard.bio')}</Label><textarea id="bio" name="bio" value={formData.bio} onChange={handleChange} rows={3} className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder={t('dashboard.bioPlaceholder')} /></div>
               <Button onClick={handleSaveProfile} disabled={isSaving} className="w-full">
                 {isSaving ? <><Loader2 className="w-4 h-4 animate-spin" />{t('dashboard.saving')}</> : <><Save className="w-4 h-4" />{t('dashboard.saveProfile')}</>}
+              </Button>
+              <Button variant="outline" onClick={() => setShowChangePassword(true)} className="w-full">
+                <KeyRound className="w-4 h-4" />{t('dashboard.changePassword')}
               </Button>
             </CardContent>
           </Card>
