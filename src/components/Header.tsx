@@ -54,14 +54,14 @@ const Header = () => {
               {t('news.title')}
             </Link>
             <a
-              href="#couriers"
+              href="/#couriers"
               className="text-muted-foreground hover:text-primary transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
               {t('nav.couriers')}
             </a>
             <a
-              href="#become"
+              href="/#become"
               className="text-muted-foreground hover:text-primary transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
@@ -121,7 +121,7 @@ const Header = () => {
               {t('news.title')}
             </Link>
               <a
-                href="#couriers"
+                href="/#couriers"
                 className="text-muted-foreground hover:text-primary transition-colors py-2"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -131,7 +131,7 @@ const Header = () => {
                 {t('nav.couriers')}
               </a>
               <a
-                href="#become"
+                href="/#become"
                 className="text-muted-foreground hover:text-primary transition-colors py-2"
                 onClick={(e) => {
                   e.stopPropagation();
