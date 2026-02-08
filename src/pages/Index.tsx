@@ -24,8 +24,8 @@ const Index = () => {
         <main>
           <HeroSection />
           <CouriersSection />
-          <MobileAppSection />
           <BecomeSection />
+          <MobileAppSection />
         </main>
         <Footer />
       </div>
