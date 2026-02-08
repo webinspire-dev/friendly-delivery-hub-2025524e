@@ -67,6 +67,13 @@ const Header = () => {
             >
               {t('nav.becomeCourier')}
             </a>
+            <Link
+              to="/contact"
+              className="text-muted-foreground hover:text-primary transition-colors"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {t('footer.contact')}
+            </Link>
           </nav>
 
           {/* Actions */}
@@ -140,6 +147,16 @@ const Header = () => {
               >
                 {t('nav.becomeCourier')}
               </a>
+              <Link
+                to="/contact"
+                className="text-muted-foreground hover:text-primary transition-colors py-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setMobileMenuOpen(false);
+                }}
+              >
+                {t('footer.contact')}
+              </Link>
               <Button
                 variant="default"
                 size="sm"
