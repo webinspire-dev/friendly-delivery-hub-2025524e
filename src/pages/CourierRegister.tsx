@@ -64,7 +64,6 @@ const CourierRegister = () => {
         return;
       }
       if (authData.user) {
-        await supabase.from('courier_profiles').insert({ user_id: authData.user.id, full_name: formData.fullName, phone: formData.phone, city: formData.city, vehicle_type: formData.vehicleType });
         toast({ title: t('register.success.title'), description: t('register.success.message') });
         navigate('/courier/login');
       }
