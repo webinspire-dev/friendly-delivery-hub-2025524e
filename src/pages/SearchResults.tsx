@@ -1,5 +1,6 @@
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useCities } from '@/contexts/CitiesContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CourierCard from '@/components/CourierCard';
@@ -13,6 +14,7 @@ const SearchResults = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { t, direction } = useLanguage();
+  const { getCityDisplayName } = useCities();
   const { isAdmin, authChecked } = useAdminAuth();
 
   const city = searchParams.get('city') || '';
@@ -70,7 +72,7 @@ const SearchResults = () => {
                     {isNearbyMode ? <Navigation className="w-5 h-5 text-primary" /> : <MapPin className="w-5 h-5 text-primary" />}
                   </div>
                   <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-                    {isNearbyMode ? t('search.nearbyTitle') : `${t('search.cityTitle')} ${t(`cities.${city}`)}`}
+                    {isNearbyMode ? t('search.nearbyTitle') : `${t('search.cityTitle')} ${getCityDisplayName(city)}`}
                   </h1>
                 </div>
                 <p className="text-muted-foreground">

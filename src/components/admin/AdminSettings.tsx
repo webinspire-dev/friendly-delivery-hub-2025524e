@@ -11,6 +11,7 @@ import { z } from 'zod';
 interface City {
   id: string;
   name: string;
+  display_name: string | null;
   name_ar: string | null;
   is_active: boolean;
 }
@@ -69,11 +70,14 @@ const AdminSettings = () => {
       return;
     }
 
+    // Generate display_name from name: replace underscores with spaces and capitalize
+    const displayName = newCityName.toLowerCase().trim().replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
     setIsAddingCity(true);
     try {
       const { data, error } = await supabase
         .from('cities')
-        .insert({ name: newCityName.toLowerCase().trim(), name_ar: newCityNameAr.trim() || null, is_active: true })
+        .insert({ name: newCityName.toLowerCase().trim(), display_name: displayName, name_ar: newCityNameAr.trim() || null, is_active: true })
         .select()
         .single();
 
@@ -155,11 +159,16 @@ const AdminSettings = () => {
 
         <div className="bg-secondary/50 rounded-xl p-4 mb-6">
           <h4 className="font-medium text-foreground mb-4">Ajouter une ville</h4>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="space-y-2">
               <Label htmlFor="newCityName">Nom (code)</Label>
               <Input id="newCityName" placeholder="ex: el_jadida" value={newCityName} onChange={(e) => setNewCityName(e.target.value)} maxLength={50} />
               <p className="text-xs text-muted-foreground">Lettres et underscores uniquement</p>
+            </div>
+            <div className="space-y-2">
+              <Label>Nom affiché</Label>
+              <Input value={newCityName ? newCityName.toLowerCase().trim().replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : ''} disabled className="bg-muted" />
+              <p className="text-xs text-muted-foreground">Généré automatiquement</p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="newCityNameAr">Nom en arabe (optionnel)</Label>
@@ -181,17 +190,21 @@ const AdminSettings = () => {
         ) : (
           <div className="space-y-2">
             <div className="grid grid-cols-12 gap-4 px-4 py-2 text-sm font-medium text-muted-foreground">
-              <div className="col-span-4">Nom</div>
-              <div className="col-span-4">Nom arabe</div>
+              <div className="col-span-3">Code</div>
+              <div className="col-span-3">Nom affiché</div>
+              <div className="col-span-2">Nom arabe</div>
               <div className="col-span-2 text-center">Active</div>
               <div className="col-span-2 text-center">Actions</div>
             </div>
             {cities.map((city) => (
               <div key={city.id} className={`grid grid-cols-12 gap-4 items-center px-4 py-3 rounded-xl transition-colors ${city.is_active ? 'bg-secondary/30' : 'bg-secondary/10 opacity-60'}`}>
-                <div className="col-span-4">
-                  <span className="font-medium text-foreground capitalize">{city.name.replace(/_/g, ' ')}</span>
+                <div className="col-span-3">
+                  <span className="font-mono text-sm text-muted-foreground">{city.name}</span>
                 </div>
-                <div className="col-span-4">
+                <div className="col-span-3">
+                  <span className="font-medium text-foreground">{city.display_name || city.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                </div>
+                <div className="col-span-2">
                   <span className="text-muted-foreground" dir="rtl">{city.name_ar || '-'}</span>
                 </div>
                 <div className="col-span-2 text-center">

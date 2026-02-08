@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useCities } from '@/contexts/CitiesContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -48,6 +49,7 @@ const CourierProfilePage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t, direction, language } = useLanguage();
+  const { getCityDisplayName } = useCities();
   const { trackProfileView, trackWhatsAppClick, trackCallClick } = useAnalytics();
   const hasTrackedView = useRef(false);
 
@@ -151,7 +153,7 @@ const CourierProfilePage = () => {
     setPendingAction(null);
   };
 
-  const zones = courier.city ? [t(`cities.${courier.city}`)] : [];
+  const zones = courier.city ? [getCityDisplayName(courier.city)] : [];
 
   return (
     <div className="min-h-screen bg-background" dir={direction}>
@@ -196,7 +198,7 @@ const CourierProfilePage = () => {
 
                 <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-4">
                   {courier.city && (
-                    <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" />{t(`cities.${courier.city}`)}</span>
+                    <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" />{getCityDisplayName(courier.city)}</span>
                   )}
                   <span className="flex items-center gap-1.5">
                     <VehicleIcon className="w-4 h-4" />

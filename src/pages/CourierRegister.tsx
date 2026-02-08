@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useCities } from '@/contexts/CitiesContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,27 +11,18 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
 
-interface City { id: string; name: string; name_ar: string | null; }
-
 const CourierRegister = () => {
   const { t, direction, language } = useLanguage();
+  const { activeCities, getCityDisplayName } = useCities();
+
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const [cities, setCities] = useState<City[]>([]);
   const [formData, setFormData] = useState({ fullName: '', email: '', phone: '', city: '', vehicleType: '', password: '', confirmPassword: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    const fetchCities = async () => {
-      const { data, error } = await supabase.from('cities').select('*').order('name');
-      if (!error && data) setCities(data.map(d => ({ id: d.id, name: d.name, name_ar: d.name_ar })));
-    };
-    fetchCities();
-  }, []);
 
   const registerSchema = z.object({
     fullName: z.string().min(2, t('register.error.nameTooShort')).max(100),
@@ -112,7 +104,7 @@ const CourierRegister = () => {
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <select id="city" name="city" value={formData.city} onChange={handleChange} className={`flex h-10 w-full rounded-md border bg-background pl-10 pr-3 py-2 text-sm ${errors.city ? 'border-destructive' : 'border-input'}`}>
                   <option value="">{t('register.selectCity')}</option>
-                  {cities.map((city) => (<option key={city.id} value={city.name}>{language === 'ar' && city.name_ar ? city.name_ar : city.name}</option>))}
+                  {activeCities.map((city) => (<option key={city.id} value={city.name}>{getCityDisplayName(city.name)}</option>))}
                 </select>
               </div>
               {errors.city && <p className="text-sm text-destructive">{errors.city}</p>}
