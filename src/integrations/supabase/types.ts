@@ -159,6 +159,7 @@ export type Database = {
           bio: string | null
           city: string | null
           created_at: string
+          email: string | null
           full_name: string
           id: string
           is_available: boolean
@@ -178,6 +179,7 @@ export type Database = {
           bio?: string | null
           city?: string | null
           created_at?: string
+          email?: string | null
           full_name: string
           id?: string
           is_available?: boolean
@@ -197,6 +199,7 @@ export type Database = {
           bio?: string | null
           city?: string | null
           created_at?: string
+          email?: string | null
           full_name?: string
           id?: string
           is_available?: boolean

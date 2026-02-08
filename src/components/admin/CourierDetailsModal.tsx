@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
   MapPin, Phone, Bike, Car, Star, Eye, MessageCircle,
-  Calendar, CheckCircle, XCircle, ExternalLink, Copy
+  Calendar, CheckCircle, XCircle, ExternalLink, Copy, Mail
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -16,6 +16,7 @@ interface CourierStat {
   courier_id: string;
   full_name: string;
   phone: string;
+  email: string | null;
   city: string | null;
   vehicle_type: string | null;
   is_available: boolean | null;
@@ -112,6 +113,17 @@ const CourierDetailsModal = ({ courier, open, onOpenChange }: CourierDetailsModa
                 </Button>
               </div>
             </div>
+            {courier.email && (
+              <div className="flex items-center justify-between">
+                <span className="text-foreground flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-muted-foreground" />
+                  {courier.email}
+                </span>
+                <Button variant="ghost" size="sm" onClick={() => copyToClipboard(courier.email!, 'Email')}>
+                  <Copy className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
