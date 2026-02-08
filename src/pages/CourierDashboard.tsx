@@ -63,7 +63,7 @@ const CourierDashboard = () => {
         if (!data.latitude || !data.longitude) setTimeout(() => setShowLocationPrompt(true), 500);
       } else {
         const metadata = user.user_metadata;
-        const newProfile = { user_id: user.id, full_name: metadata?.full_name || user.email?.split('@')[0] || 'Livreur', phone: metadata?.phone || '', city: metadata?.city || null, vehicle_type: metadata?.vehicle_type || 'moto' };
+        const newProfile = { user_id: user.id, full_name: metadata?.full_name || user.email?.split('@')[0] || 'Livreur', phone: metadata?.phone || '', city: metadata?.city || null, vehicle_type: metadata?.vehicle_type || 'moto', email: user.email || null };
         const { data: createdProfile, error: createError } = await supabase.from('courier_profiles').upsert(newProfile, { onConflict: 'user_id' }).select().single();
         if (createError) { console.error('Error creating profile:', createError); toast({ title: t('dashboard.error'), description: t('dashboard.updateError'), variant: 'destructive' }); }
         else if (createdProfile) {

@@ -18,6 +18,7 @@ interface CourierStat {
   courier_id: string;
   full_name: string;
   phone: string;
+  email: string | null;
   city: string | null;
   vehicle_type: string | null;
   is_available: boolean | null;

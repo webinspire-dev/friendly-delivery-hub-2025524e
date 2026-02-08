@@ -16,6 +16,7 @@ interface CourierStat {
   courier_id: string;
   full_name: string;
   phone: string;
+  email: string | null;
   city: string | null;
   vehicle_type: string | null;
   is_available: boolean | null;
@@ -85,6 +86,7 @@ const AdminDashboard = () => {
         courier_id: p.id,
         full_name: p.full_name,
         phone: p.phone,
+        email: p.email ?? null,
         city: p.city,
         vehicle_type: p.vehicle_type,
         is_available: p.is_available,
