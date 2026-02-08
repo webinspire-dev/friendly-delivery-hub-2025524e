@@ -49,10 +49,10 @@ const CourierDashboard = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  useEffect(() => { if (user) fetchProfile(); }, [user]);
+  useEffect(() => { if (user && session) fetchProfile(); }, [user, session]);
 
   const fetchProfile = async () => {
-    if (!user) return;
+    if (!user || !session) return;
     try {
       const { data, error } = await supabase.from('courier_profiles').select('*').eq('user_id', user.id).maybeSingle();
       if (error) { console.error('Error fetching profile:', error); setIsLoading(false); return; }
@@ -64,8 +64,8 @@ const CourierDashboard = () => {
       } else {
         const metadata = user.user_metadata;
         const newProfile = { user_id: user.id, full_name: metadata?.full_name || user.email?.split('@')[0] || 'Livreur', phone: metadata?.phone || '', city: metadata?.city || null, vehicle_type: metadata?.vehicle_type || 'moto' };
-        const { data: createdProfile, error: createError } = await supabase.from('courier_profiles').insert(newProfile).select().single();
-        if (createError) { toast({ title: t('dashboard.error'), description: t('dashboard.updateError'), variant: 'destructive' }); }
+        const { data: createdProfile, error: createError } = await supabase.from('courier_profiles').upsert(newProfile, { onConflict: 'user_id' }).select().single();
+        if (createError) { console.error('Error creating profile:', createError); toast({ title: t('dashboard.error'), description: t('dashboard.updateError'), variant: 'destructive' }); }
         else if (createdProfile) {
           setProfile(createdProfile); setIsAvailable(createdProfile.is_available ?? false);
           setFormData({ full_name: createdProfile.full_name || '', phone: createdProfile.phone || '', city: createdProfile.city || '', vehicle_type: createdProfile.vehicle_type || 'moto', bio: createdProfile.bio || '' });
