@@ -89,6 +89,47 @@ export type Database = {
         }
         Relationships: []
       }
+      claim_requests: {
+        Row: {
+          admin_note: string | null
+          courier_id: string
+          created_at: string
+          id: string
+          phone_number: string
+          status: string
+          updated_at: string
+          verification_code: string | null
+        }
+        Insert: {
+          admin_note?: string | null
+          courier_id: string
+          created_at?: string
+          id?: string
+          phone_number: string
+          status?: string
+          updated_at?: string
+          verification_code?: string | null
+        }
+        Update: {
+          admin_note?: string | null
+          courier_id?: string
+          created_at?: string
+          id?: string
+          phone_number?: string
+          status?: string
+          updated_at?: string
+          verification_code?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "claim_requests_courier_id_fkey"
+            columns: ["courier_id"]
+            isOneToOne: false
+            referencedRelation: "courier_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       courier_analytics: {
         Row: {
           courier_id: string
@@ -164,6 +205,7 @@ export type Database = {
           id: string
           is_available: boolean
           is_blocked: boolean
+          is_claimed: boolean
           is_verified: boolean
           latitude: number | null
           longitude: number | null
@@ -184,6 +226,7 @@ export type Database = {
           id?: string
           is_available?: boolean
           is_blocked?: boolean
+          is_claimed?: boolean
           is_verified?: boolean
           latitude?: number | null
           longitude?: number | null
@@ -204,6 +247,7 @@ export type Database = {
           id?: string
           is_available?: boolean
           is_blocked?: boolean
+          is_claimed?: boolean
           is_verified?: boolean
           latitude?: number | null
           longitude?: number | null

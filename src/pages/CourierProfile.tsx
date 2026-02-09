@@ -7,13 +7,14 @@ import { Button } from '@/components/ui/button';
 import {
   MapPin, Star, CheckCircle, Bike, Car, ArrowLeft, Phone,
   MessageCircle, Clock, Calendar, Shield, Award, Navigation,
-  Package, TrendingUp, ThumbsUp, Loader2, MapPinOff
+  Package, TrendingUp, ThumbsUp, Loader2, MapPinOff, UserCheck
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import DisclaimerDialog from '@/components/DisclaimerDialog';
+import ClaimProfileDialog from '@/components/courier/ClaimProfileDialog';
 
 interface CourierProfile {
   id: string;
@@ -26,6 +27,7 @@ interface CourierProfile {
   avatar_url: string | null;
   is_available: boolean;
   is_verified: boolean;
+  is_claimed: boolean;
   total_deliveries: number;
   rating: number;
   latitude: number | null;
@@ -57,6 +59,7 @@ const CourierProfilePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [disclaimerOpen, setDisclaimerOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<'whatsapp' | 'call' | null>(null);
+  const [claimOpen, setClaimOpen] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -88,6 +91,7 @@ const CourierProfilePage = () => {
           ...data,
           is_available: data.is_available ?? false,
           is_verified: data.is_verified ?? false,
+          is_claimed: data.is_claimed ?? false,
           total_deliveries: data.total_deliveries ?? 0,
           rating: data.rating ?? 5.0,
         });
@@ -227,6 +231,11 @@ const CourierProfilePage = () => {
                 <Button size="lg" variant="secondary" className="gap-2" onClick={handleCallClick} disabled={!courier.is_available}>
                   <Phone className="w-5 h-5" />{t('profile.call')}
                 </Button>
+                {!courier.is_claimed && (
+                  <Button size="lg" variant="outline" className="gap-2" onClick={() => setClaimOpen(true)}>
+                    <UserCheck className="w-5 h-5" />Claim your profile
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -313,6 +322,13 @@ const CourierProfilePage = () => {
         onOpenChange={setDisclaimerOpen}
         onConfirm={handleConfirmContact}
         contactType={pendingAction || 'whatsapp'}
+      />
+      <ClaimProfileDialog
+        open={claimOpen}
+        onOpenChange={setClaimOpen}
+        courierId={courier.id}
+        courierPhone={courier.phone}
+        courierName={courier.full_name}
       />
 
       <Footer />
