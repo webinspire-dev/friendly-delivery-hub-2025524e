@@ -9,12 +9,13 @@ import { MapPin, SlidersHorizontal, ArrowLeft, Bike, Car, Search, Navigation, Lo
 import { useState, useMemo } from 'react';
 import { useCouriers } from '@/hooks/useCouriers';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const SearchResults = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { t, direction } = useLanguage();
-  const { getCityDisplayName } = useCities();
+  const { cities, getCityDisplayName } = useCities();
   const { isAdmin, authChecked } = useAdminAuth();
 
   const city = searchParams.get('city') || '';
@@ -26,9 +27,10 @@ const SearchResults = () => {
   const [availableOnly, setAvailableOnly] = useState(false);
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [maxDistance, setMaxDistance] = useState<number>(50);
+  const [isLocating, setIsLocating] = useState(false);
 
   const { couriers, isLoading } = useCouriers({
-    city: isNearbyMode ? undefined : city,
+    city: isNearbyMode ? undefined : (city || undefined),
     vehicleType: vehicleFilter,
     availableOnly,
     verifiedOnly,
@@ -54,6 +56,36 @@ const SearchResults = () => {
     setMaxDistance(100);
   };
 
+  const handleCityChange = (value: string) => {
+    if (value === '__all__') {
+      setSearchParams({});
+    } else {
+      setSearchParams({ city: value });
+    }
+  };
+
+  const handleNearbyClick = () => {
+    if (isNearbyMode) {
+      setSearchParams({});
+      return;
+    }
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setSearchParams({
+          mode: 'nearby',
+          lat: position.coords.latitude.toString(),
+          lng: position.coords.longitude.toString(),
+        });
+        setIsLocating(false);
+      },
+      () => {
+        setIsLocating(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background" dir={direction}>
       <Header />
@@ -72,7 +104,11 @@ const SearchResults = () => {
                     {isNearbyMode ? <Navigation className="w-5 h-5 text-primary" /> : <MapPin className="w-5 h-5 text-primary" />}
                   </div>
                   <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-                    {isNearbyMode ? t('search.nearbyTitle') : `${t('search.cityTitle')} ${getCityDisplayName(city)}`}
+                    {isNearbyMode
+                      ? t('search.nearbyTitle')
+                      : city
+                        ? `${t('search.cityTitle')} ${getCityDisplayName(city)}`
+                        : t('search.allCouriers')}
                   </h1>
                 </div>
                 <p className="text-muted-foreground">
@@ -90,6 +126,32 @@ const SearchResults = () => {
                   </div>
                 </div>
               )}
+            </div>
+
+            {/* Search Controls */}
+            <div className="flex flex-wrap items-center gap-3 mt-6">
+              <Select value={city || '__all__'} onValueChange={handleCityChange}>
+                <SelectTrigger className="w-[200px] bg-background">
+                  <MapPin className="w-4 h-4 shrink-0 text-muted-foreground" />
+                  <SelectValue placeholder={t('search.selectCity')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__all__">{t('search.allCouriers')}</SelectItem>
+                  {cities.map((c) => (
+                    <SelectItem key={c.id} value={c.name}>{getCityDisplayName(c.name)}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Button
+                variant={isNearbyMode ? 'default' : 'outline'}
+                onClick={handleNearbyClick}
+                disabled={isLocating}
+                className="gap-2"
+              >
+                {isLocating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Navigation className="w-4 h-4" />}
+                {isLocating ? t('search.locating') : t('search.nearbyMe')}
+              </Button>
             </div>
           </div>
         </div>
