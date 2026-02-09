@@ -16,6 +16,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 import News from "./pages/News";
 import NewsArticle from "./pages/NewsArticle";
+import CityLanding from "./pages/CityLanding";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Terms from "./pages/Terms";
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/courier/dashboard" element={<CourierDashboard />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/livreurs/:citySlug" element={<CityLanding />} />
             <Route path="/news" element={<News />} />
             <Route path="/news/:id" element={<NewsArticle />} />
             <Route path="/about" element={<About />} />
