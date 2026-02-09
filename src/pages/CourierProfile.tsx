@@ -87,6 +87,10 @@ const CourierProfilePage = () => {
       }
 
       if (data) {
+        if (data.is_blocked) {
+          setCourier(null);
+          return;
+        }
         setCourier({
           ...data,
           is_available: data.is_available ?? false,
