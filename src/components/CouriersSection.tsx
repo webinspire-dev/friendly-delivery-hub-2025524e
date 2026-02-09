@@ -2,10 +2,13 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import CourierCard from './CourierCard';
 import { useCouriers } from '@/hooks/useCouriers';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 const CouriersSection = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const { isAdmin, authChecked } = useAdminAuth();
 
   // Ne passer isAdmin que si authChecked est vrai, sinon undefined pour éviter la race condition
@@ -59,6 +62,20 @@ const CouriersSection = () => {
                 isVerified={courier.is_verified}
               />
             ))}
+          </div>
+        )}
+
+        {/* View All Button */}
+        {!isLoading && couriers.length > 0 && (
+          <div className="text-center mt-10">
+            <Button
+              size="lg"
+              onClick={() => navigate('/search')}
+              className="gap-2"
+            >
+              {t('couriers.viewAll') || 'Voir tous les livreurs'}
+              <ArrowRight className="w-4 h-4" />
+            </Button>
           </div>
         )}
       </div>
