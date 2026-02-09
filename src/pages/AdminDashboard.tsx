@@ -11,6 +11,7 @@ import AdminAnalyticsChart from '@/components/admin/AdminAnalyticsChart';
 import AdminSettings from '@/components/admin/AdminSettings';
 import AdminBlacklist from '@/components/admin/AdminBlacklist';
 import AdminArticles from '@/components/admin/AdminArticles';
+import AdminClaimRequests from '@/components/admin/AdminClaimRequests';
 
 interface CourierStat {
   courier_id: string;
@@ -292,6 +293,16 @@ const AdminDashboard = () => {
               <p className="text-muted-foreground">Créez et gérez les articles de la page Nouveautés</p>
             </div>
             <AdminArticles />
+          </div>
+        );
+      case 'claims':
+        return (
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">Demandes de réclamation</h1>
+              <p className="text-muted-foreground">Gérez les demandes de réclamation de profil des livreurs</p>
+            </div>
+            <AdminClaimRequests />
           </div>
         );
       default:

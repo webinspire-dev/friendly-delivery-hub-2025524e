@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, BarChart3, Settings,
-  LogOut, Home, Ban, Newspaper
+  LogOut, Home, Ban, Newspaper, UserCheck
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -17,6 +17,7 @@ interface AdminSidebarProps {
 const menuItems = [
   { icon: LayoutDashboard, label: 'Tableau de bord', tab: 'dashboard' },
   { icon: Users, label: 'Livreurs', tab: 'couriers' },
+  { icon: UserCheck, label: 'Réclamations', tab: 'claims' },
   { icon: Ban, label: 'Liste noire', tab: 'blacklist' },
   { icon: Newspaper, label: 'Articles', tab: 'articles' },
   { icon: BarChart3, label: 'Statistiques', tab: 'analytics' },
