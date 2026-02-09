@@ -35,7 +35,7 @@ const CourierDashboard = () => {
   const [isAvailable, setIsAvailable] = useState(false);
   const [showLocationPrompt, setShowLocationPrompt] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
-  const [formData, setFormData] = useState({ full_name: '', phone: '', city: '', vehicle_type: 'moto', bio: '' });
+  const [formData, setFormData] = useState({ full_name: '', phone: '', city: '', vehicle_type: 'moto', bio: '', email: '' });
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -58,7 +58,7 @@ const CourierDashboard = () => {
       if (error) { console.error('Error fetching profile:', error); setIsLoading(false); return; }
       if (data) {
         setProfile(data); setIsAvailable(data.is_available ?? false);
-        setFormData({ full_name: data.full_name || '', phone: data.phone || '', city: data.city || '', vehicle_type: data.vehicle_type || 'moto', bio: data.bio || '' });
+        setFormData({ full_name: data.full_name || '', phone: data.phone || '', city: data.city || '', vehicle_type: data.vehicle_type || 'moto', bio: data.bio || '', email: data.email || user.email || '' });
         setIsLoading(false);
         if (!data.latitude || !data.longitude) setTimeout(() => setShowLocationPrompt(true), 500);
       } else {
@@ -68,7 +68,7 @@ const CourierDashboard = () => {
         if (createError) { console.error('Error creating profile:', createError); toast({ title: t('dashboard.error'), description: t('dashboard.updateError'), variant: 'destructive' }); }
         else if (createdProfile) {
           setProfile(createdProfile); setIsAvailable(createdProfile.is_available ?? false);
-          setFormData({ full_name: createdProfile.full_name || '', phone: createdProfile.phone || '', city: createdProfile.city || '', vehicle_type: createdProfile.vehicle_type || 'moto', bio: createdProfile.bio || '' });
+          setFormData({ full_name: createdProfile.full_name || '', phone: createdProfile.phone || '', city: createdProfile.city || '', vehicle_type: createdProfile.vehicle_type || 'moto', bio: createdProfile.bio || '', email: createdProfile.email || user.email || '' });
         }
         setIsLoading(false);
       }
@@ -119,8 +119,13 @@ const CourierDashboard = () => {
   const handleSaveProfile = async () => {
     if (!user) return; setIsSaving(true);
     try {
-      const { error } = await supabase.from('courier_profiles').update({ full_name: formData.full_name, phone: formData.phone, city: formData.city, vehicle_type: formData.vehicle_type, bio: formData.bio }).eq('user_id', user.id);
+      const { error } = await supabase.from('courier_profiles').update({ full_name: formData.full_name, phone: formData.phone, city: formData.city, vehicle_type: formData.vehicle_type, bio: formData.bio, email: formData.email }).eq('user_id', user.id);
       if (error) throw error;
+      // Also update email in auth if changed
+      if (formData.email && formData.email !== user.email) {
+        const { error: authError } = await supabase.auth.updateUser({ email: formData.email });
+        if (authError) console.error('Auth email update error:', authError);
+      }
       toast({ title: t('dashboard.saved'), description: t('dashboard.profileUpdated') }); fetchProfile();
     } catch (error) { toast({ title: t('dashboard.error'), description: t('dashboard.updateError'), variant: 'destructive' }); }
     finally { setIsSaving(false); }
@@ -198,6 +203,7 @@ const CourierDashboard = () => {
                 <div className="space-y-2"><Label htmlFor="full_name">{t('dashboard.fullName')}</Label><Input id="full_name" name="full_name" value={formData.full_name} onChange={handleChange} /></div>
                 <div className="space-y-2"><Label htmlFor="phone">{t('dashboard.phone')}</Label><Input id="phone" name="phone" value={formData.phone} onChange={handleChange} /></div>
               </div>
+              <div className="space-y-2"><Label htmlFor="email">Email</Label><Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} placeholder="email@exemple.com" /></div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="city">{t('dashboard.city')}</Label>
